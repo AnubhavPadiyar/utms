@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEHU Transport — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1E3A8A; --navy-dark: #152a6e; --navy-light: #EEF2FF;
+  --white: #FFFFFF; --yellow: #FACC15; --yellow-dark: #ca9f0a;
+  --green: #16A34A; --green-bg: #F0FDF4;
+  --red: #DC2626; --red-bg: #FEF2F2;
+  --gray: #F8F9FA; --border: #E2E8F0;
+  --text: #1E293B; --sub: #475569; --muted: #94A3B8;
+}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5F6FA; color: var(--text); min-height: 100vh; }
+
+.nav { background: var(--navy); padding: 0 2rem; height: 65px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(30,58,138,0.3); }
+.nav-brand { display: flex; align-items: center; gap: 0.75rem; }
+.nav-logo { width: 38px; height: 38px; background: var(--yellow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.nav-name strong { display: block; font-size: 0.95rem; font-weight: 700; color: white; }
+.nav-name small { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+.nav-links { display: flex; align-items: center; gap: 0.5rem; }
+.nav-link { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 6px; transition: all 0.2s; }
+.nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+.nav-link.active { background: var(--yellow); color: var(--navy); font-weight: 700; }
+.nav-link.danger { background: var(--red); color: white; }
+
+.hero { background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); padding: 2.5rem 2rem; position: relative; overflow: hidden; }
+.hero::after { content: '⚙️'; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); font-size: 8rem; opacity: 0.07; }
+.hero-inner { max-width: 1100px; margin: 0 auto; }
+.hero-tag { display: inline-block; background: var(--yellow); color: var(--navy); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.8rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.9rem; }
+.hero h1 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: white; margin-bottom: 0.4rem; }
+.hero p { color: rgba(255,255,255,0.65); font-size: 0.88rem; margin-bottom: 1.5rem; }
+.stats-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.stat { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 1rem 1.5rem; min-width: 130px; animation: fadeUp 0.5s ease both; }
+.stat:nth-child(1){animation-delay:0.1s} .stat:nth-child(2){animation-delay:0.2s} .stat:nth-child(3){animation-delay:0.3s} .stat:nth-child(4){animation-delay:0.4s}
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.stat .n { font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 500; color: var(--yellow); }
+.stat .l { font-size: 0.7rem; color: rgba(255,255,255,0.6); margin-top: 0.2rem; }
+
+.main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+/* TABS */
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 0.4rem; box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
+.tab { flex: 1; padding: 0.65rem 1rem; border: none; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: none; color: var(--sub); }
+.tab.active { background: var(--navy); color: white; }
+.tab:hover:not(.active) { background: var(--gray); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+/* CARDS */
+.table-card { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.card-header { padding: 1.1rem 1.3rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--gray); }
+.card-header h3 { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+.card-header span { font-size: 0.75rem; color: var(--muted); }
+
+/* SEARCH */
+.search-bar { padding: 1rem 1.3rem; border-bottom: 1px solid var(--border); }
+.search-input { width: 100%; background: var(--gray); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.6rem 1rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.83rem; color: var(--text); outline: none; transition: border-color 0.2s; }
+.search-input:focus { border-color: var(--navy); background: white; }
+.search-input::placeholder { color: var(--muted); }
+
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--navy); }
+thead th { padding: 0.85rem 1rem; text-align: left; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--navy-light); }
+tbody td { padding: 0.9rem 1rem; font-size: 0.83rem; vertical-align: middle; }
+.tfoot { padding: 0.8rem 1.1rem; border-top: 1px solid var(--border); background: var(--gray); display: flex; align-items: center; justify-content: space-between; font-size: 0.74rem; color: var(--muted); }
+.tfoot strong { color: var(--navy); }
+
+.avatar { width: 36px; height: 36px; background: var(--navy-light); color: var(--navy); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+.id-tag { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--sub); background: var(--gray); border: 1px solid var(--border); border-radius: 5px; padding: 0.2rem 0.5rem; }
+.bus-chip { width: 38px; height: 38px; background: var(--navy-light); color: var(--navy); border: 1.5px solid rgba(30,58,138,0.2); border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-weight: 600; font-size: 0.85rem; }
+.corridor-tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.68rem; font-weight: 700; }
+.ca { background: #EEF2FF; color: #3730A3; }
+.cb { background: #F0FDF4; color: #15803D; }
+.cc { background: #FFF7ED; color: #B45309; }
+.cd { background: #FDF4FF; color: #7E22CE; }
+.ce { background: #FFF1F2; color: #BE123C; }
+.time-chip { display: inline-flex; align-items: center; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+.tc-700 { background: #F0FDF4; color: #16A34A; }
+.tc-645 { background: #FFF7ED; color: #C2410C; }
+.tc-635 { background: #F5F3FF; color: #6D28D9; }
+.tc-610 { background: #FEF2F2; color: #DC2626; }
+
+.loading { text-align: center; padding: 3rem; color: var(--muted); }
+.spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.no-data { text-align: center; padding: 3rem; color: var(--muted); font-size: 0.85rem; }
+
+/* CORRIDOR SUMMARY */
+.corridor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.corridor-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+.corridor-card .c-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+.corridor-card .c-name { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
+.corridor-card .c-stats { display: flex; gap: 1rem; }
+.corridor-card .c-stat .v { font-family: 'DM Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--navy); }
+.corridor-card .c-stat .l { font-size: 0.68rem; color: var(--muted); }
+
+@media(max-width:640px){ .main{padding:1rem} .hero{padding:2rem 1rem} .tabs{flex-direction:column} }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🚌</div>
+    <div class="nav-name">
+      <strong>GEHU Transport Portal</strong>
+      <small>Admin Panel</small>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">🏠 Dashboard</a>
+    <a href="register.html" class="nav-link">👤 Register</a>
+    <a href="delay.html" class="nav-link danger">⚠️ Report Delay</a>
+    <a href="admin.html" class="nav-link active">⚙️ Admin</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">⚙️ Admin Panel</div>
+    <h1>Transport Management Dashboard</h1>
+    <p>Overview of all buses, stops, students and corridors</p>
+    <div class="stats-row">
+      <div class="stat"><div class="n" id="s-buses">—</div><div class="l">Total Buses</div></div>
+      <div class="stat"><div class="n" id="s-stops">—</div><div class="l">Total Stops</div></div>
+      <div class="stat"><div class="n" id="s-students">—</div><div class="l">Registered Students</div></div>
+      <div class="stat"><div class="n">5</div><div class="l">Active Corridors</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('students')">👥 Students</button>
+    <button class="tab" onclick="switchTab('buses')">🚌 Buses</button>
+    <button class="tab" onclick="switchTab('corridors')">🗺️ Corridors</button>
+  </div>
+
+  <!-- STUDENTS TAB -->
+  <div class="tab-content active" id="tab-students">
+    <div class="table-card">
+      <div class="card-header">
+        <h3>👥 Registered Students</h3>
+        <span id="student-count">Loading...</span>
+      </div>
+      <div class="search-bar">
+        <input class="search-input" id="studentSearch" type="text" placeholder="Search by name, student ID or stop…" oninput="filterStudents()">
+      </div>
+      <table>
+        <thead><tr>
+          <th>#</th><th>Student</th><th>Student ID</th><th>Email</th><th>Boarding Stop</th><th>Assigned Bus</th>
+        </tr></thead>
+        <tbody id="studentTb">
+          <tr><td colspan="6"><div class="loading"><div class="spinner"></div>Loading students...</div></td></tr>
+        </tbody>
+      </table>
+      <div class="tfoot">
+        <span id="student-cnt">Loading...</span>
+        <span>GEHU Transport System</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUSES TAB -->
+  <div class="tab-content" id="tab-buses">
+    <div class="table-card">
+      <div class="card-header">
+        <h3>🚌 All Buses</h3>
+        <span id="bus-count">Loading...</span>
+      </div>
+      <div class="search-bar">
+        <input class="search-input" id="busSearch" type="text" placeholder="Search by bus number, reg. number or corridor…" oninput="filterBuses()">
+      </div>
+      <table>
+        <thead><tr>
+          <th>#</th><th>Bus No.</th><th>Reg. Number</th><th>Departure</th><th>Corridor</th><th>Starts From</th><th>2nd Shift</th>
+        </tr></thead>
+        <tbody id="busTb">
+          <tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading buses...</div></td></tr>
+        </tbody>
+      </table>
+      <div class="tfoot">
+        <span id="bus-cnt">Loading...</span>
+        <span>All routes → GEU Campus</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORRIDORS TAB -->
+  <div class="tab-content" id="tab-corridors">
+    <div class="corridor-grid" id="corridorGrid">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'http://localhost:8080/api';
+let allStudents = [], allBuses = [];
+
+const corridorInfo = {
+  'CORRIDOR_A': {label:'Corridor A', name:'Rispana / ISBT Route', cls:'ca'},
+  'CORRIDOR_B': {label:'Corridor B', name:'GMS Road', cls:'cb'},
+  'CORRIDOR_C': {label:'Corridor C', name:'Rajpur Road', cls:'cc'},
+  'CORRIDOR_D': {label:'Corridor D', name:'Selaqui Route', cls:'cd'},
+  'CORRIDOR_E': {label:'Corridor E', name:'Clock Tower', cls:'ce'},
+};
+
+const timeInfo = {
+  '7.00 AM': {cls:'tc-700'}, '6.45 AM': {cls:'tc-645'},
+  '6.35 AM': {cls:'tc-635'}, '6.10 AM': {cls:'tc-610'},
+};
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['students','buses','corridors'][i] === tab);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+async function loadData() {
+  try {
+    const [busRes, stopRes, studentRes] = await Promise.all([
+      fetch(`${API}/buses`),
+      fetch(`${API}/stops`),
+      fetch(`${API}/students`)
+    ]);
+    allBuses = await busRes.json();
+    const stops = await stopRes.json();
+    allStudents = await studentRes.json();
+
+    document.getElementById('s-buses').textContent = allBuses.length;
+    document.getElementById('s-stops').textContent = stops.length;
+    document.getElementById('s-students').textContent = allStudents.length;
+
+    renderStudents(allStudents);
+    renderBuses(allBuses);
+    renderCorridors(allBuses);
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function getInitials(name) {
+  return name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) : '?';
+}
+
+function renderStudents(data) {
+  const tb = document.getElementById('studentTb');
+  document.getElementById('student-count').textContent = data.length + ' students';
+  document.getElementById('student-cnt').innerHTML = `Showing <strong>${data.length}</strong> students`;
+  if (!data.length) {
+    tb.innerHTML = `<tr><td colspan="6"><div class="no-data">No students registered yet</div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = data.map((s, i) => `
+    <tr>
+      <td style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.72rem">${String(i+1).padStart(2,'0')}</td>
+      <td><div style="display:flex;align-items:center;gap:0.6rem"><div class="avatar">${getInitials(s.name)}</div><span style="font-weight:600">${s.name}</span></div></td>
+      <td><span class="id-tag">${s.studentId}</span></td>
+      <td style="color:var(--sub);font-size:0.78rem">${s.email}</td>
+      <td><span style="background:var(--navy-light);color:var(--navy);border-radius:5px;padding:0.2rem 0.6rem;font-size:0.75rem;font-weight:600">📍 ${s.boardingStop}</span></td>
+      <td><div class="bus-chip">${s.assignedBusNumber || '—'}</div></td>
+    </tr>
+  `).join('');
+}
+
+function renderBuses(data) {
+  const tb = document.getElementById('busTb');
+  document.getElementById('bus-count').textContent = data.length + ' buses';
+  document.getElementById('bus-cnt').innerHTML = `Showing <strong>${data.length}</strong> buses`;
+  if (!data.length) {
+    tb.innerHTML = `<tr><td colspan="7"><div class="no-data">No buses found</div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = data.map((b, i) => {
+    const ci = corridorInfo[b.corridor] || {label:b.corridor, cls:'ca'};
+    const ti = timeInfo[b.departureTime] || {cls:'tc-700'};
+    return `<tr>
+      <td style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.72rem">${String(i+1).padStart(2,'0')}</td>
+      <td><div class="bus-chip">${b.busNumber}</div></td>
+      <td><span class="id-tag">${b.regNumber}</span></td>
+      <td><span class="time-chip ${ti.cls}">● ${b.departureTime}</span></td>
+      <td><span class="corridor-tag ${ci.cls}">${ci.label}</span></td>
+      <td style="font-size:0.8rem;color:var(--sub)">${b.startStop}</td>
+      <td>${b.hasSecondShift ? '<span style="color:var(--green);font-weight:600;font-size:0.8rem">✅ Yes</span>' : '<span style="color:var(--red);font-weight:600;font-size:0.8rem">❌ No</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCorridors(buses) {
+  const grid = document.getElementById('corridorGrid');
+  const counts = {};
+  buses.forEach(b => { counts[b.corridor] = (counts[b.corridor] || 0) + 1; });
+  grid.innerHTML = Object.entries(corridorInfo).map(([key, info]) => `
+    <div class="corridor-card">
+      <div class="c-label"><span class="corridor-tag ${info.cls}">${info.label}</span></div>
+      <div class="c-name">${info.name}</div>
+      <div class="c-stats">
+        <div class="c-stat"><div class="v">${counts[key] || 0}</div><div class="l">Buses</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterStudents() {
+  const q = document.getElementById('studentSearch').value.toLowerCase();
+  renderStudents(allStudents.filter(s =>
+    s.name.toLowerCase().includes(q) ||
+    s.studentId.toLowerCase().includes(q) ||
+    s.boardingStop.toLowerCase().includes(q)
+  ));
+}
+
+function filterBuses() {
+  const q = document.getElementById('busSearch').value.toLowerCase();
+  renderBuses(allBuses.filter(b =>
+    b.busNumber.toString().includes(q) ||
+    b.regNumber.toLowerCase().includes(q) ||
+    b.corridor.toLowerCase().includes(q)
+  ));
+}
+
+loadData();
+</script>
+</body>
+</html>

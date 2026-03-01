@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEHU Transport — Student Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1E3A8A; --navy-dark: #152a6e; --navy-light: #EEF2FF;
+  --white: #FFFFFF; --yellow: #FACC15; --yellow-dark: #ca9f0a;
+  --green: #16A34A; --green-bg: #F0FDF4;
+  --red: #DC2626; --red-bg: #FEF2F2;
+  --gray: #F8F9FA; --border: #E2E8F0;
+  --text: #1E293B; --sub: #475569; --muted: #94A3B8;
+}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5F6FA; color: var(--text); min-height: 100vh; }
+
+/* NAV */
+.nav {
+  background: var(--navy); padding: 0 2rem; height: 65px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(30,58,138,0.3);
+}
+.nav-brand { display: flex; align-items: center; gap: 0.75rem; }
+.nav-logo { width: 38px; height: 38px; background: var(--yellow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.nav-name strong { display: block; font-size: 0.95rem; font-weight: 700; color: white; }
+.nav-name small { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+.nav-links { display: flex; align-items: center; gap: 0.5rem; }
+.nav-link { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 6px; transition: all 0.2s; }
+.nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+.nav-link.active { background: var(--yellow); color: var(--navy); font-weight: 700; }
+.nav-link.danger { background: var(--red); color: white; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+  padding: 2.5rem 2rem; position: relative; overflow: hidden;
+}
+.hero::after { content: '👤'; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); font-size: 8rem; opacity: 0.07; }
+.hero-inner { max-width: 700px; margin: 0 auto; }
+.hero-tag { display: inline-block; background: var(--yellow); color: var(--navy); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.8rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.9rem; }
+.hero h1 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: white; margin-bottom: 0.4rem; }
+.hero p { color: rgba(255,255,255,0.65); font-size: 0.88rem; }
+
+/* MAIN */
+.main { max-width: 700px; margin: 0 auto; padding: 2rem; }
+
+/* FORM CARD */
+.form-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  margin-bottom: 1.5rem;
+}
+.form-header {
+  background: var(--navy-light);
+  border-bottom: 1px solid var(--border);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.form-header-icon {
+  width: 40px; height: 40px;
+  background: var(--navy);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.form-header h2 { font-size: 1rem; font-weight: 700; color: var(--navy); }
+.form-header p { font-size: 0.75rem; color: var(--sub); margin-top: 0.1rem; }
+.form-body { padding: 1.5rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group.full { grid-column: 1 / -1; }
+label { font-size: 0.78rem; font-weight: 600; color: var(--sub); letter-spacing: 0.03em; }
+.required { color: var(--red); }
+input, select {
+  background: var(--gray);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+input:focus, select:focus { border-color: var(--navy); background: white; }
+input::placeholder { color: var(--muted); }
+.input-hint { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+.form-divider { height: 1px; background: var(--border); margin: 1.2rem 0; }
+.submit-btn {
+  width: 100%;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+}
+.submit-btn:hover { background: var(--navy-dark); transform: translateY(-1px); }
+.submit-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+/* RESULT CARD */
+.result-card {
+  display: none;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  animation: fadeUp 0.4s ease;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.result-card.show { display: block; }
+.result-header {
+  background: var(--green);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.result-header.error { background: var(--red); }
+.result-header h3 { font-size: 1rem; font-weight: 700; color: white; }
+.result-header p { font-size: 0.75rem; color: rgba(255,255,255,0.8); margin-top: 0.1rem; }
+.result-body { padding: 1.5rem; }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.result-item { }
+.result-item .rl { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+.result-item .rv { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.bus-assigned {
+  background: var(--navy-light);
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+.bus-assigned .bus-num { font-family: 'DM Mono', monospace; font-size: 3rem; font-weight: 700; color: var(--navy); line-height: 1; }
+.bus-assigned .bus-label { font-size: 0.78rem; color: var(--sub); margin-top: 0.3rem; font-weight: 500; }
+.bus-assigned .bus-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; }
+
+/* ERROR */
+.error-msg {
+  display: none;
+  background: var(--red-bg);
+  border: 1px solid var(--red);
+  border-left: 4px solid var(--red);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  color: var(--red);
+  margin-top: 1rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+.error-msg.show { display: flex; }
+
+@media(max-width:640px){
+  .main{padding:1rem}
+  .form-grid{grid-template-columns:1fr}
+  .result-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🚌</div>
+    <div class="nav-name">
+      <strong>GEHU Transport Portal</strong>
+      <small>Graphic Era Hill University</small>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">🏠 Dashboard</a>
+    <a href="register.html" class="nav-link active">👤 Register</a>
+    <a href="delay.html" class="nav-link danger">⚠️ Report Delay</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">👤 Student Registration</div>
+    <h1>Register for Bus Service</h1>
+    <p>Enter your details and get automatically assigned the best bus for your area</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- FORM CARD -->
+  <div class="form-card">
+    <div class="form-header">
+      <div class="form-header-icon">📝</div>
+      <div>
+        <h2>Student Details</h2>
+        <p>Fill in your information to register for university transport</p>
+      </div>
+    </div>
+    <div class="form-body">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Full Name <span class="required">*</span></label>
+          <input type="text" id="name" placeholder="e.g. Anubhav Padiyar">
+        </div>
+
+        <div class="form-group">
+          <label>Student ID <span class="required">*</span></label>
+          <input type="text" id="studentId" placeholder="e.g. 240111016">
+          <span class="input-hint">Your university roll number</span>
+        </div>
+
+        <div class="form-group full">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" id="email" placeholder="e.g. anubhav@gehu.ac.in">
+        </div>
+
+        <div class="form-divider" style="grid-column:1/-1"></div>
+
+        <div class="form-group full">
+          <label>Your Boarding Stop <span class="required">*</span></label>
+          <select id="stop">
+            <option value="">— Select your nearest stop —</option>
+            <optgroup label="Corridor A — Rispana / ISBT Route">
+              <option value="Ranipokhri">Ranipokhri</option>
+              <option value="Doiwala">Doiwala</option>
+              <option value="Jogiwala">Jogiwala</option>
+              <option value="Rispana">Rispana</option>
+              <option value="Kargi Chowk">Kargi Chowk</option>
+              <option value="ISBT">ISBT</option>
+            </optgroup>
+            <optgroup label="Corridor B — GMS Road">
+              <option value="Hathibadkala">Hathibadkala</option>
+              <option value="Garhi Cant">Garhi Cant</option>
+              <option value="ONGC Chowk">ONGC Chowk</option>
+              <option value="Ballupur Chowk">Ballupur Chowk</option>
+              <option value="GMS Road">GMS Road</option>
+            </optgroup>
+            <optgroup label="Corridor C — Rajpur Road">
+              <option value="Rajpur">Rajpur</option>
+              <option value="Survey Chowk">Survey Chowk</option>
+              <option value="Araghar">Araghar</option>
+            </optgroup>
+            <optgroup label="Corridor D — Selaqui">
+              <option value="VikasNagar">VikasNagar</option>
+              <option value="Selaqui Chowk">Selaqui Chowk</option>
+              <option value="Premnagar">Premnagar</option>
+              <option value="Panditwari">Panditwari</option>
+              <option value="Balliwala Chowk">Balliwala Chowk</option>
+            </optgroup>
+            <optgroup label="Corridor E — Clock Tower">
+              <option value="Clock Tower">Clock Tower</option>
+              <option value="Darshanlal Chowk">Darshanlal Chowk</option>
+              <option value="Saharanpur Chowk">Saharanpur Chowk</option>
+            </optgroup>
+          </select>
+          <span class="input-hint">A bus will be automatically assigned based on your stop</span>
+        </div>
+
+      </div>
+
+      <!-- ERROR -->
+      <div class="error-msg" id="errMsg">
+        <span>❌</span>
+        <span id="errText">Something went wrong</span>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="register()">
+        🚌 Register & Get My Bus
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card" id="resultCard">
+    <div class="result-header" id="resultHeader">
+      <div style="font-size:1.5rem">✅</div>
+      <div>
+        <h3>Registration Successful!</h3>
+        <p>Your bus has been assigned automatically</p>
+      </div>
+    </div>
+    <div class="result-body">
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="rl">Student Name</div>
+          <div class="rv" id="r-name">—</div>
+        </div>
+        <div class="result-item">
+          <div class="rl">Student ID</div>
+          <div class="rv" id="r-id">—</div>
+        </div>
+        <div class="result-item">
+          <div class="rl">Email</div>
+          <div class="rv" id="r-email">—</div>
+        </div>
+        <div class="result-item">
+          <div class="rl">Boarding Stop</div>
+          <div class="rv" id="r-stop">—</div>
+        </div>
+      </div>
+      <div class="bus-assigned">
+        <div class="bus-num" id="r-bus">—</div>
+        <div class="bus-label">Your Assigned Bus Number</div>
+        <div class="bus-note">This bus passes through your boarding stop every morning</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'http://localhost:8080/api';
+
+async function register() {
+  const name = document.getElementById('name').value.trim();
+  const studentId = document.getElementById('studentId').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const stop = document.getElementById('stop').value;
+
+  // Validate
+  if (!name || !studentId || !email || !stop) {
+    showError('Please fill in all fields!');
+    return;
+  }
+  if (!email.includes('@')) {
+    showError('Please enter a valid email address!');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Registering...';
+  hideError();
+
+  try {
+    const res = await fetch(`${API}/students/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, studentId, email, boardingStop: stop })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      // Show result
+      document.getElementById('r-name').textContent = data.student.name;
+      document.getElementById('r-id').textContent = data.student.studentId;
+      document.getElementById('r-email').textContent = data.student.email;
+      document.getElementById('r-stop').textContent = data.student.boardingStop;
+      document.getElementById('r-bus').textContent = data.assignedBus || 'TBD';
+      document.getElementById('resultCard').classList.add('show');
+      document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      showError(data.message || 'Registration failed!');
+    }
+  } catch(e) {
+    showError('Cannot connect to backend. Make sure Spring Boot is running!');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🚌 Register & Get My Bus';
+}
+
+function showError(msg) {
+  document.getElementById('errMsg').classList.add('show');
+  document.getElementById('errText').textContent = msg;
+}
+function hideError() {
+  document.getElementById('errMsg').classList.remove('show');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEHU Transport — Report Delay</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1E3A8A; --navy-dark: #152a6e; --navy-light: #EEF2FF;
+  --white: #FFFFFF; --yellow: #FACC15; --yellow-dark: #ca9f0a;
+  --green: #16A34A; --green-bg: #F0FDF4;
+  --red: #DC2626; --red-bg: #FEF2F2;
+  --orange: #EA580C; --orange-bg: #FFF7ED;
+  --gray: #F8F9FA; --border: #E2E8F0;
+  --text: #1E293B; --sub: #475569; --muted: #94A3B8;
+}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5F6FA; color: var(--text); min-height: 100vh; }
+
+.nav { background: var(--navy); padding: 0 2rem; height: 65px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(30,58,138,0.3); }
+.nav-brand { display: flex; align-items: center; gap: 0.75rem; }
+.nav-logo { width: 38px; height: 38px; background: var(--yellow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.nav-name strong { display: block; font-size: 0.95rem; font-weight: 700; color: white; }
+.nav-name small { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+.nav-links { display: flex; align-items: center; gap: 0.5rem; }
+.nav-link { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 6px; transition: all 0.2s; }
+.nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+.nav-link.active { background: var(--red); color: white; font-weight: 700; }
+.nav-link.yellow { background: var(--yellow); color: var(--navy); font-weight: 700; }
+
+.hero { background: linear-gradient(135deg, #7f1d1d 0%, var(--red) 100%); padding: 2.5rem 2rem; position: relative; overflow: hidden; }
+.hero::after { content: '⚠️'; position: absolute; right: 5%; top: 50%; transform: translateY(-50%); font-size: 8rem; opacity: 0.1; }
+.hero-inner { max-width: 700px; margin: 0 auto; }
+.hero-tag { display: inline-block; background: var(--yellow); color: var(--navy); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.8rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.9rem; }
+.hero h1 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: white; margin-bottom: 0.4rem; }
+.hero p { color: rgba(255,255,255,0.7); font-size: 0.88rem; }
+
+.main { max-width: 700px; margin: 0 auto; padding: 2rem; }
+
+.form-card { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 1.5rem; }
+.form-header { background: var(--red-bg); border-bottom: 1px solid #fecaca; padding: 1.2rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+.form-header-icon { width: 40px; height: 40px; background: var(--red); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.form-header h2 { font-size: 1rem; font-weight: 700; color: var(--red); }
+.form-header p { font-size: 0.75rem; color: var(--sub); margin-top: 0.1rem; }
+.form-body { padding: 1.5rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.2rem; }
+label { font-size: 0.78rem; font-weight: 600; color: var(--sub); letter-spacing: 0.03em; }
+.required { color: var(--red); }
+input, select, textarea { background: var(--gray); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.7rem 1rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; color: var(--text); outline: none; transition: border-color 0.2s, background 0.2s; width: 100%; }
+input:focus, select:focus, textarea:focus { border-color: var(--red); background: white; }
+input::placeholder, textarea::placeholder { color: var(--muted); }
+.delay-slider { padding: 0.4rem 0; }
+.slider-row { display: flex; align-items: center; gap: 1rem; }
+input[type=range] { flex: 1; accent-color: var(--red); padding: 0; background: none; border: none; }
+input[type=range]:focus { border: none; background: none; }
+.delay-val { font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 700; color: var(--red); min-width: 60px; text-align: center; background: var(--red-bg); border: 1.5px solid #fecaca; border-radius: 8px; padding: 0.3rem 0.6rem; }
+.input-hint { font-size: 0.7rem; color: var(--muted); }
+.submit-btn { width: 100%; background: var(--red); color: white; border: none; border-radius: 10px; padding: 0.85rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.5rem; }
+.submit-btn:hover { background: #b91c1c; transform: translateY(-1px); }
+.submit-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+/* RESULTS */
+.results { display: none; }
+.results.show { display: block; animation: fadeUp 0.4s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.alert-banner {
+  background: var(--orange-bg);
+  border: 1px solid #fed7aa;
+  border-left: 4px solid var(--orange);
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.alert-banner .icon { font-size: 1.5rem; flex-shrink: 0; }
+.alert-banner h3 { font-size: 0.95rem; font-weight: 700; color: var(--orange); }
+.alert-banner p { font-size: 0.8rem; color: var(--sub); margin-top: 0.2rem; }
+
+.section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.affected-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+.affected-stops { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.stop-tag { display: inline-flex; align-items: center; gap: 0.35rem; background: var(--red-bg); border: 1px solid #fecaca; color: var(--red); border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.78rem; font-weight: 600; }
+.affected-buses { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.bus-tag { display: inline-flex; align-items: center; gap: 0.35rem; background: var(--red-bg); border: 1px solid #fecaca; color: var(--red); border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.78rem; font-weight: 600; font-family: 'DM Mono', monospace; }
+
+.alt-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+.alt-bus {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem;
+  background: var(--green-bg);
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  transition: transform 0.15s;
+}
+.alt-bus:hover { transform: translateY(-1px); }
+.alt-bus:last-child { margin-bottom: 0; }
+.alt-bus-num { width: 48px; height: 48px; background: var(--green); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 700; flex-shrink: 0; }
+.alt-bus-info { flex: 1; }
+.alt-bus-info strong { display: block; font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.alt-bus-info span { font-size: 0.75rem; color: var(--sub); }
+.alt-bus-badge { background: var(--green); color: white; border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.7rem; font-weight: 700; }
+
+.no-alt { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+
+@media(max-width:640px){ .main{padding:1rem} .hero{padding:2rem 1rem} }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🚌</div>
+    <div class="nav-name">
+      <strong>GEHU Transport Portal</strong>
+      <small>Graphic Era Hill University</small>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">🏠 Dashboard</a>
+    <a href="register.html" class="nav-link yellow">👤 Register</a>
+    <a href="delay.html" class="nav-link active">⚠️ Report Delay</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">⚠️ Delay Reporting</div>
+    <h1>Report a Bus Delay</h1>
+    <p>Our smart BFS system will instantly find all affected buses and suggest safe alternatives</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- FORM -->
+  <div class="form-card">
+    <div class="form-header">
+      <div class="form-header-icon">🚨</div>
+      <div>
+        <h2>Delay Information</h2>
+        <p>Tell us where the delay is happening and we'll handle the rest</p>
+      </div>
+    </div>
+    <div class="form-body">
+
+      <div class="form-group">
+        <label>Delayed Stop <span class="required">*</span></label>
+        <select id="delayStop">
+          <option value="">— Select the stop with delay —</option>
+          <optgroup label="Corridor A — Rispana / ISBT">
+            <option value="Ranipokhri">Ranipokhri</option>
+            <option value="Doiwala">Doiwala</option>
+            <option value="Jogiwala">Jogiwala</option>
+            <option value="Rispana">Rispana</option>
+            <option value="Kargi Chowk">Kargi Chowk</option>
+            <option value="ISBT">ISBT</option>
+          </optgroup>
+          <optgroup label="Corridor B — GMS Road">
+            <option value="Hathibadkala">Hathibadkala</option>
+            <option value="Garhi Cant">Garhi Cant</option>
+            <option value="ONGC Chowk">ONGC Chowk</option>
+            <option value="Ballupur Chowk">Ballupur Chowk</option>
+            <option value="GMS Road">GMS Road</option>
+          </optgroup>
+          <optgroup label="Corridor C — Rajpur Road">
+            <option value="Rajpur">Rajpur</option>
+            <option value="Survey Chowk">Survey Chowk</option>
+            <option value="Araghar">Araghar</option>
+          </optgroup>
+          <optgroup label="Corridor D — Selaqui">
+            <option value="VikasNagar">VikasNagar</option>
+            <option value="Selaqui Chowk">Selaqui Chowk</option>
+            <option value="Premnagar">Premnagar</option>
+            <option value="Panditwari">Panditwari</option>
+            <option value="Balliwala Chowk">Balliwala Chowk</option>
+          </optgroup>
+          <optgroup label="Corridor E — Clock Tower">
+            <option value="Clock Tower">Clock Tower</option>
+            <option value="Darshanlal Chowk">Darshanlal Chowk</option>
+            <option value="Saharanpur Chowk">Saharanpur Chowk</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Delay Duration <span class="required">*</span></label>
+        <div class="delay-slider">
+          <div class="slider-row">
+            <input type="range" id="delayRange" min="5" max="60" step="5" value="15" oninput="updateDelay(this.value)">
+            <div class="delay-val" id="delayVal">15 min</div>
+          </div>
+        </div>
+        <span class="input-hint">Drag to set estimated delay in minutes</span>
+      </div>
+
+      <div class="form-group">
+        <label>Reason (optional)</label>
+        <select id="reason">
+          <option value="Traffic">Traffic Jam</option>
+          <option value="Accident">Accident on Road</option>
+          <option value="Vehicle Issue">Vehicle Issue / Breakdown</option>
+          <option value="Weather">Bad Weather</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="reportDelay()">
+        🔍 Analyze Delay with BFS
+      </button>
+
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+
+    <!-- ALERT BANNER -->
+    <div class="alert-banner">
+      <div class="icon">🚨</div>
+      <div>
+        <h3 id="r-title">Delay detected!</h3>
+        <p id="r-msg">Loading...</p>
+      </div>
+    </div>
+
+    <!-- AFFECTED -->
+    <div class="affected-card">
+      <div class="section-title">🔴 Affected Stops on Same Corridor</div>
+      <div class="affected-stops" id="r-stops"></div>
+
+      <div class="section-title" style="margin-top:1.2rem">🚌 Affected Buses</div>
+      <div class="affected-buses" id="r-buses"></div>
+    </div>
+
+    <!-- ALTERNATES -->
+    <div class="alt-card">
+      <div class="section-title">✅ Safe Alternate Buses (Different Corridor)</div>
+      <div id="r-alts"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const API = 'http://localhost:8080/api';
+
+function updateDelay(val) {
+  document.getElementById('delayVal').textContent = val + ' min';
+}
+
+async function reportDelay() {
+  const stop = document.getElementById('delayStop').value;
+  const delay = parseInt(document.getElementById('delayRange').value);
+  const reason = document.getElementById('reason').value;
+
+  if (!stop) {
+    alert('Please select a delayed stop!');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Analyzing with BFS...';
+
+  try {
+    const res = await fetch(`${API}/delay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stopName: stop, delayMinutes: delay, reason: reason })
+    });
+    const data = await res.json();
+
+    // Show results
+    document.getElementById('results').classList.add('show');
+    document.getElementById('r-title').textContent = `⚠️ ${delay} min delay at ${stop} due to ${reason}`;
+    document.getElementById('r-msg').textContent = data.message;
+
+    // Affected stops
+    const stopsEl = document.getElementById('r-stops');
+    if (data.affectedStops && data.affectedStops.length) {
+      stopsEl.innerHTML = data.affectedStops.map(s =>
+        `<span class="stop-tag">📍 ${s.name}</span>`
+      ).join('');
+    } else {
+      stopsEl.innerHTML = '<span style="color:var(--muted);font-size:0.82rem">No stops affected</span>';
+    }
+
+    // Affected buses
+    const busesEl = document.getElementById('r-buses');
+    if (data.affectedBuses && data.affectedBuses.length) {
+      busesEl.innerHTML = data.affectedBuses.map(b =>
+        `<span class="bus-tag">🚌 Bus ${b.busNumber}</span>`
+      ).join('');
+    } else {
+      busesEl.innerHTML = '<span style="color:var(--muted);font-size:0.82rem">No buses affected</span>';
+    }
+
+    // Alternate buses
+    const altsEl = document.getElementById('r-alts');
+    if (data.alternateBuses && data.alternateBuses.length) {
+      altsEl.innerHTML = data.alternateBuses.map(b => `
+        <div class="alt-bus">
+          <div class="alt-bus-num">${b.busNumber}</div>
+          <div class="alt-bus-info">
+            <strong>Bus ${b.busNumber} — ${b.regNumber}</strong>
+            <span>Departs from ${b.startStop} at ${b.departureTime} · ${b.corridor.replace('_',' ')}</span>
+          </div>
+          <span class="alt-bus-badge">✅ Safe</span>
+        </div>
+      `).join('');
+    } else {
+      altsEl.innerHTML = '<div class="no-alt">😔 No alternate buses available on other corridors</div>';
+    }
+
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+  } catch(e) {
+    alert('Cannot connect to backend. Make sure Spring Boot is running!');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🔍 Analyze Delay with BFS';
+}
+</script>
+</body>
+</html>

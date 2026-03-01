@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEHU Transport Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1E3A8A;
+  --navy-dark: #152a6e;
+  --navy-light: #EEF2FF;
+  --white: #FFFFFF;
+  --yellow: #FACC15;
+  --yellow-dark: #ca9f0a;
+  --green: #16A34A;
+  --green-bg: #F0FDF4;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+  --gray: #F8F9FA;
+  --border: #E2E8F0;
+  --text: #1E293B;
+  --sub: #475569;
+  --muted: #94A3B8;
+}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5F6FA; color: var(--text); }
+
+/* NAV */
+.nav {
+  background: var(--navy);
+  padding: 0 2rem;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(30,58,138,0.3);
+}
+.nav-brand { display: flex; align-items: center; gap: 0.75rem; }
+.nav-logo {
+  width: 38px; height: 38px;
+  background: var(--yellow);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.nav-name strong { display: block; font-size: 0.95rem; font-weight: 700; color: white; }
+.nav-name small { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+.nav-links { display: flex; align-items: center; gap: 0.5rem; }
+.nav-link {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+.nav-link.active { background: var(--yellow); color: var(--navy); font-weight: 700; }
+.nav-link.danger { background: var(--red); color: white; }
+.nav-link.danger:hover { background: #b91c1c; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+  padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '🚌';
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 8rem;
+  opacity: 0.07;
+}
+.hero-inner { max-width: 1100px; margin: 0 auto; }
+.hero-tag {
+  display: inline-block;
+  background: var(--yellow);
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.8rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.9rem;
+}
+.hero h1 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; color: white; margin-bottom: 0.4rem; }
+.hero p { color: rgba(255,255,255,0.65); font-size: 0.9rem; margin-bottom: 2rem; }
+.stats-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.stat {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  min-width: 130px;
+  animation: fadeUp 0.5s ease both;
+}
+.stat:nth-child(1){animation-delay:0.1s}
+.stat:nth-child(2){animation-delay:0.2s}
+.stat:nth-child(3){animation-delay:0.3s}
+.stat:nth-child(4){animation-delay:0.4s}
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.stat .n { font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 500; color: var(--yellow); }
+.stat .l { font-size: 0.7rem; color: rgba(255,255,255,0.6); margin-top: 0.2rem; }
+
+/* MAIN */
+.main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+/* ALERT */
+.alert {
+  display: none;
+  background: var(--red-bg);
+  border: 1px solid var(--red);
+  border-left: 4px solid var(--red);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--red);
+}
+.alert.show { display: flex; align-items: flex-start; gap: 0.6rem; }
+
+/* CONTROLS */
+.controls {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+}
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-icon { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; }
+.search-input {
+  width: 100%;
+  background: var(--gray);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 1rem 0.6rem 2.3rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.83rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--navy); background: white; }
+.search-input::placeholder { color: var(--muted); }
+.filter-sel {
+  background: var(--gray);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.81rem;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+}
+.filter-sel:focus { border-color: var(--navy); }
+.btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--navy); color: white; }
+.btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
+.btn-yellow { background: var(--yellow); color: var(--navy); font-weight: 700; }
+.btn-yellow:hover { background: var(--yellow-dark); transform: translateY(-1px); }
+.btn-red { background: var(--red); color: white; }
+.btn-red:hover { background: #b91c1c; }
+
+/* TABLE */
+.table-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--navy); }
+thead th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--navy-light); }
+tbody td { padding: 0.9rem 1rem; font-size: 0.83rem; vertical-align: middle; }
+.bus-chip {
+  width: 42px; height: 42px;
+  background: var(--navy-light);
+  color: var(--navy);
+  border: 1.5px solid rgba(30,58,138,0.2);
+  border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.reg-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--sub);
+  background: var(--gray);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+}
+.time-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.28rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.71rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tc-700 { background: var(--green-bg); color: var(--green); }
+.tc-645 { background: #FFF7ED; color: #C2410C; }
+.tc-635 { background: #F5F3FF; color: #6D28D9; }
+.tc-610 { background: var(--red-bg); color: var(--red); }
+.corridor-tag {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.ca { background: #EEF2FF; color: #3730A3; }
+.cb { background: #F0FDF4; color: #15803D; }
+.cc { background: #FFF7ED; color: #B45309; }
+.cd { background: #FDF4FF; color: #7E22CE; }
+.ce { background: #FFF1F2; color: #BE123C; }
+.stop-pill {
+  display: inline-block;
+  background: var(--gray);
+  border: 1px solid var(--border);
+  color: var(--sub);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  margin: 0.1rem;
+}
+.stop-pill.geu { background: var(--navy); color: white; font-weight: 700; }
+.tfoot {
+  padding: 0.8rem 1.1rem;
+  border-top: 1px solid var(--border);
+  background: var(--gray);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+.tfoot strong { color: var(--navy); }
+.no-results { text-align: center; padding: 3rem; color: var(--muted); }
+.no-results .ic { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+/* LOADING */
+.loading { text-align: center; padding: 3rem; color: var(--muted); }
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* LEGEND */
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.leg { display: flex; align-items: center; gap: 0.35rem; font-size: 0.74rem; color: var(--sub); }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+@media(max-width:640px){
+  .main{padding:1rem}
+  .hero{padding:2rem 1rem}
+  thead th:nth-child(2),tbody td:nth-child(2){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🚌</div>
+    <div class="nav-name">
+      <strong>GEHU Transport Portal</strong>
+      <small>Graphic Era Hill University</small>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active">🏠 Dashboard</a>
+    <a href="register.html" class="nav-link">👤 Register</a>
+    <a href="delay.html" class="nav-link danger">⚠️ Report Delay</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">📋 Live Bus Directory</div>
+    <h1>University Bus Routes</h1>
+    <p>All routes, timings and stops!</p>
+    <div class="stats-row">
+      <div class="stat"><div class="n" id="s-buses">—</div><div class="l">Total Buses</div></div>
+      <div class="stat"><div class="n" id="s-stops">—</div><div class="l">Unique Stops</div></div>
+      <div class="stat"><div class="n" id="s-corridors">5</div><div class="l">Corridors</div></div>
+      <div class="stat"><div class="n" id="s-students">—</div><div class="l">Students</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ALERT -->
+  <div class="alert" id="alert">
+    <span>⚠️</span>
+    <span id="alert-text">Loading...</span>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="q" type="text" placeholder="Search bus number, stop, reg. number…" oninput="filterTable()">
+    </div>
+    <select class="filter-sel" id="tf" onchange="filterTable()">
+      <option value="">All Timings</option>
+      <option value="7.00">7:00 AM</option>
+      <option value="6.45">6:45 AM</option>
+      <option value="6.35">6:35 AM</option>
+      <option value="6.10">6:10 AM</option>
+    </select>
+    <select class="filter-sel" id="cf" onchange="filterTable()">
+      <option value="">All Corridors</option>
+      <option value="CORRIDOR_A">Corridor A (Rispana)</option>
+      <option value="CORRIDOR_B">Corridor B (GMS Road)</option>
+      <option value="CORRIDOR_C">Corridor C (Rajpur)</option>
+      <option value="CORRIDOR_D">Corridor D (Selaqui)</option>
+      <option value="CORRIDOR_E">Corridor E (Clock Tower)</option>
+    </select>
+    <a href="delay.html" class="btn btn-red">⚠️ Report Delay</a>
+    <a href="register.html" class="btn btn-yellow">👤 Register</a>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#16A34A"></div> 7:00 AM</div>
+    <div class="leg"><div class="leg-dot" style="background:#C2410C"></div> 6:45 AM</div>
+    <div class="leg"><div class="leg-dot" style="background:#6D28D9"></div> 6:35 AM</div>
+    <div class="leg"><div class="leg-dot" style="background:#DC2626"></div> 6:10 AM (1st shift only)</div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Reg. No.</th>
+          <th>Bus</th>
+          <th>Departure</th>
+          <th>Corridor</th>
+          <th>Starts From</th>
+          <th>2nd Shift</th>
+        </tr>
+      </thead>
+      <tbody id="tb">
+        <tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading bus data...</div></td></tr>
+      </tbody>
+    </table>
+    <div class="tfoot">
+      <span id="cnt">Loading...</span>
+      <span>All routes terminate at <strong>GEU Campus</strong></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'http://localhost:8080/api';
+let allBuses = [];
+
+const corridorInfo = {
+  'CORRIDOR_A': {label:'Corridor A', sub:'Rispana / ISBT', cls:'ca'},
+  'CORRIDOR_B': {label:'Corridor B', sub:'GMS Road', cls:'cb'},
+  'CORRIDOR_C': {label:'Corridor C', sub:'Rajpur Road', cls:'cc'},
+  'CORRIDOR_D': {label:'Corridor D', sub:'Selaqui', cls:'cd'},
+  'CORRIDOR_E': {label:'Corridor E', sub:'Clock Tower', cls:'ce'},
+};
+
+const timeInfo = {
+  '7.00 AM': {cls:'tc-700', label:'● 7:00 AM'},
+  '6.45 AM': {cls:'tc-645', label:'● 6:45 AM'},
+  '6.35 AM': {cls:'tc-635', label:'● 6:35 AM'},
+  '6.10 AM': {cls:'tc-610', label:'● 6:10 AM'},
+};
+
+async function loadData() {
+  try {
+    const [busRes, stopRes] = await Promise.all([
+      fetch(`${API}/buses`),
+      fetch(`${API}/stops`)
+    ]);
+    allBuses = await busRes.json();
+    const stops = await stopRes.json();
+
+    document.getElementById('s-buses').textContent = allBuses.length;
+    document.getElementById('s-stops').textContent = stops.length;
+
+    renderTable(allBuses);
+  } catch(e) {
+    document.getElementById('alert').classList.add('show');
+    document.getElementById('alert-text').textContent = 'Cannot connect to backend. Make sure Spring Boot is running on localhost:8080';
+    document.getElementById('tb').innerHTML = `<tr><td colspan="7"><div class="no-results"><div class="ic">⚠️</div><p>Backend not connected</p></div></td></tr>`;
+  }
+}
+
+function renderTable(data) {
+  const tb = document.getElementById('tb');
+  if (!data.length) {
+    tb.innerHTML = `<tr><td colspan="7"><div class="no-results"><div class="ic">🔍</div><p>No buses found</p></div></td></tr>`;
+    document.getElementById('cnt').innerHTML = 'No results';
+    return;
+  }
+  tb.innerHTML = data.map((b, i) => {
+    const ti = timeInfo[b.departureTime] || {cls:'tc-700', label:'● ' + b.departureTime};
+    const ci = corridorInfo[b.corridor] || {label: b.corridor, sub:'', cls:'ca'};
+    return `<tr>
+      <td style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.72rem">${String(i+1).padStart(2,'0')}</td>
+      <td><span class="reg-tag">${b.regNumber}</span></td>
+      <td><div class="bus-chip">${b.busNumber}</div></td>
+      <td><span class="time-chip ${ti.cls}">${ti.label}</span></td>
+      <td>
+        <span class="corridor-tag ${ci.cls}">${ci.label}</span>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:0.2rem">${ci.sub}</div>
+      </td>
+      <td><span class="stop-pill">${b.startStop}</span></td>
+      <td>${b.hasSecondShift ? '<span style="color:var(--green);font-weight:600;font-size:0.8rem">✅ Yes</span>' : '<span style="color:var(--red);font-weight:600;font-size:0.8rem">❌ No</span>'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('cnt').innerHTML = `Showing <strong>${data.length}</strong> of <strong>${allBuses.length}</strong> buses`;
+}
+
+function filterTable() {
+  const q = document.getElementById('q').value.toLowerCase();
+  const t = document.getElementById('tf').value;
+  const c = document.getElementById('cf').value;
+  const filtered = allBuses.filter(b => {
+    const mq = !q || b.busNumber.toString().includes(q) || b.regNumber.toLowerCase().includes(q) || (b.startStop && b.startStop.toLowerCase().includes(q));
+    const mt = !t || (b.departureTime && b.departureTime.includes(t));
+    const mc = !c || b.corridor === c;
+    return mq && mt && mc;
+  });
+  renderTable(filtered);
+}
+
+loadData();
+</script>
+</body>
+</html>
