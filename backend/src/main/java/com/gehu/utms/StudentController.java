@@ -37,9 +37,16 @@ public class StudentController {
 
         int assignedBus = 0;
         if (stop != null) {
-            List<Bus> busesAtStop = busRepository.findByCorridor(stop.getCorridor());
+            // First try to find a bus that starts exactly from this stop
+            List<Bus> busesAtStop = busRepository.findByStartStop(boardingStop);
             if (!busesAtStop.isEmpty()) {
                 assignedBus = busesAtStop.get(0).getBusNumber();
+            } else {
+                // Fall back to any bus on the same corridor
+                List<Bus> corridorBuses = busRepository.findByCorridor(stop.getCorridor());
+                if (!corridorBuses.isEmpty()) {
+                    assignedBus = corridorBuses.get(0).getBusNumber();
+                }
             }
         }
 

@@ -16,6 +16,9 @@ public class BusController {
     private StopRepository stopRepository;
 
     @Autowired
+    private RouteStopRepository routeStopRepository;
+
+    @Autowired
     private BfsService bfsService;
 
     // Get all buses
@@ -30,12 +33,19 @@ public class BusController {
         return stopRepository.findAll();
     }
 
+    // Get route stops for a specific bus
+    @GetMapping("/routes/{busNumber}")
+    public List<RouteStop> getRouteForBus(@PathVariable int busNumber) {
+        return routeStopRepository.findByBusNumber(busNumber);
+    }
+
     // Report a delay and get BFS result
     @PostMapping("/delay")
     public Map<String, Object> reportDelay(@RequestBody Map<String, Object> request) {
         String stopName = (String) request.get("stopName");
         int delayMinutes = (int) request.get("delayMinutes");
         String reason = (String) request.get("reason");
-        return bfsService.analyzeDelay(stopName, delayMinutes, reason);
+        int busNumber = request.get("busNumber") != null ? (int) request.get("busNumber") : 0;
+        return bfsService.analyzeDelay(stopName, delayMinutes, reason, busNumber);
     }
 }

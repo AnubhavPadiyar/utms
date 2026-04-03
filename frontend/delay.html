@@ -56,40 +56,22 @@ input[type=range] { flex: 1; accent-color: var(--red); padding: 0; background: n
 input[type=range]:focus { border: none; background: none; }
 .delay-val { font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 700; color: var(--red); min-width: 60px; text-align: center; background: var(--red-bg); border: 1.5px solid #fecaca; border-radius: 8px; padding: 0.3rem 0.6rem; }
 .input-hint { font-size: 0.7rem; color: var(--muted); }
+.bus-group { display: none; }
+.bus-group.show { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.2rem; }
 .submit-btn { width: 100%; background: var(--red); color: white; border: none; border-radius: 10px; padding: 0.85rem; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.5rem; }
 .submit-btn:hover { background: #b91c1c; transform: translateY(-1px); }
 .submit-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
 
-/* RESULTS */
 .results { display: none; }
 .results.show { display: block; animation: fadeUp 0.4s ease; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-.alert-banner {
-  background: var(--orange-bg);
-  border: 1px solid #fed7aa;
-  border-left: 4px solid var(--orange);
-  border-radius: 12px;
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
+.alert-banner { background: var(--orange-bg); border: 1px solid #fed7aa; border-left: 4px solid var(--orange); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 0.75rem; }
 .alert-banner .icon { font-size: 1.5rem; flex-shrink: 0; }
 .alert-banner h3 { font-size: 0.95rem; font-weight: 700; color: var(--orange); }
 .alert-banner p { font-size: 0.8rem; color: var(--sub); margin-top: 0.2rem; }
 
-.section-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
+.section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
 
 .affected-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
 .affected-stops { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
@@ -98,17 +80,7 @@ input[type=range]:focus { border: none; background: none; }
 .bus-tag { display: inline-flex; align-items: center; gap: 0.35rem; background: var(--red-bg); border: 1px solid #fecaca; color: var(--red); border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.78rem; font-weight: 600; font-family: 'DM Mono', monospace; }
 
 .alt-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-.alt-bus {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.9rem;
-  background: var(--green-bg);
-  border: 1px solid #bbf7d0;
-  border-radius: 10px;
-  margin-bottom: 0.6rem;
-  transition: transform 0.15s;
-}
+.alt-bus { display: flex; align-items: center; gap: 1rem; padding: 0.9rem; background: var(--green-bg); border: 1px solid #bbf7d0; border-radius: 10px; margin-bottom: 0.6rem; transition: transform 0.15s; }
 .alt-bus:hover { transform: translateY(-1px); }
 .alt-bus:last-child { margin-bottom: 0; }
 .alt-bus-num { width: 48px; height: 48px; background: var(--green); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 700; flex-shrink: 0; }
@@ -116,8 +88,13 @@ input[type=range]:focus { border: none; background: none; }
 .alt-bus-info strong { display: block; font-size: 0.88rem; font-weight: 700; color: var(--text); }
 .alt-bus-info span { font-size: 0.75rem; color: var(--sub); }
 .alt-bus-badge { background: var(--green); color: white; border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.7rem; font-weight: 700; }
-
 .no-alt { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+
+/* PER STOP ALTERNATES */
+.per-stop-card { background: var(--navy-light); border: 1px solid rgba(30,58,138,0.15); border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem; }
+.per-stop-card .stop-name { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+.per-stop-buses { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.per-stop-bus { background: var(--navy); color: white; border-radius: 6px; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 600; font-family: 'DM Mono', monospace; }
 
 @media(max-width:640px){ .main{padding:1rem} .hero{padding:2rem 1rem} }
 </style>
@@ -134,8 +111,10 @@ input[type=range]:focus { border: none; background: none; }
   </div>
   <div class="nav-links">
     <a href="index.html" class="nav-link">🏠 Dashboard</a>
+    <a href="login.html" class="nav-link">🔑 My Bus</a>
     <a href="register.html" class="nav-link yellow">👤 Register</a>
     <a href="delay.html" class="nav-link active">⚠️ Report Delay</a>
+    <a href="admin.html" class="nav-link">⚙️ Admin</a>
   </div>
 </nav>
 
@@ -149,7 +128,6 @@ input[type=range]:focus { border: none; background: none; }
 
 <div class="main">
 
-  <!-- FORM -->
   <div class="form-card">
     <div class="form-header">
       <div class="form-header-icon">🚨</div>
@@ -164,38 +142,67 @@ input[type=range]:focus { border: none; background: none; }
         <label>Delayed Stop <span class="required">*</span></label>
         <select id="delayStop">
           <option value="">— Select the stop with delay —</option>
-          <optgroup label="Corridor A — Rispana / ISBT">
+          <optgroup label="Rispana Corridor">
             <option value="Ranipokhri">Ranipokhri</option>
             <option value="Doiwala">Doiwala</option>
+            <option value="Lachiwala">Lachiwala</option>
+            <option value="Kuanwala">Kuanwala</option>
+            <option value="Harawala">Harawala</option>
+            <option value="Miawala">Miawala</option>
+            <option value="Mokampur">Mokampur</option>
+            <option value="Nakrounda More">Nakrounda More</option>
             <option value="Jogiwala">Jogiwala</option>
             <option value="Rispana">Rispana</option>
             <option value="Kargi Chowk">Kargi Chowk</option>
-            <option value="ISBT">ISBT</option>
+            <option value="Fountain Chowk">Fountain Chowk</option>
           </optgroup>
-          <optgroup label="Corridor B — GMS Road">
+          <optgroup label="Raipur/IT Park Corridor">
+            <option value="Gujraunwala">Gujraunwala</option>
+            <option value="Raipur Chowk">Raipur Chowk</option>
+            <option value="Dobhal Chowk">Dobhal Chowk</option>
+            <option value="6 No. Pulia">6 No. Pulia</option>
+            <option value="Post Office Nehru Gram">Post Office Nehru Gram</option>
+            <option value="IT Park">IT Park</option>
+            <option value="Shastdhara Crossing">Shastdhara Crossing</option>
+            <option value="Araghar">Araghar</option>
+            <option value="Rajpur">Rajpur</option>
+          </optgroup>
+          <optgroup label="GMS Road Corridor">
             <option value="Hathibadkala">Hathibadkala</option>
             <option value="Garhi Cant">Garhi Cant</option>
             <option value="ONGC Chowk">ONGC Chowk</option>
             <option value="Ballupur Chowk">Ballupur Chowk</option>
+            <option value="Rajender Nagar">Rajender Nagar</option>
             <option value="GMS Road">GMS Road</option>
           </optgroup>
-          <optgroup label="Corridor C — Rajpur Road">
-            <option value="Rajpur">Rajpur</option>
-            <option value="Survey Chowk">Survey Chowk</option>
-            <option value="Araghar">Araghar</option>
-          </optgroup>
-          <optgroup label="Corridor D — Selaqui">
+          <optgroup label="Selaqui Corridor">
             <option value="VikasNagar">VikasNagar</option>
             <option value="Selaqui Chowk">Selaqui Chowk</option>
+            <option value="Sudhowala">Sudhowala</option>
             <option value="Premnagar">Premnagar</option>
             <option value="Panditwari">Panditwari</option>
             <option value="Balliwala Chowk">Balliwala Chowk</option>
           </optgroup>
-          <optgroup label="Corridor E — Clock Tower">
+          <optgroup label="Clock Tower Corridor">
             <option value="Clock Tower">Clock Tower</option>
+            <option value="Asley Hall">Asley Hall</option>
             <option value="Darshanlal Chowk">Darshanlal Chowk</option>
             <option value="Saharanpur Chowk">Saharanpur Chowk</option>
+            <option value="Matawala Bagh">Matawala Bagh</option>
           </optgroup>
+          <optgroup label="Kargi/Daudwala Corridor">
+            <option value="Daudwala">Daudwala</option>
+            <option value="Bangali Kothi">Bangali Kothi</option>
+            <option value="Race Course">Race Course</option>
+            <option value="Dharampur">Dharampur</option>
+          </optgroup>
+          <optgroup label="Naya Gaon Corridor">
+            <option value="Naya Gaon Palio">Naya Gaon Palio</option>
+            <option value="Badowala">Badowala</option>
+            <option value="Telpur">Telpur</option>
+            <option value="Mehuwala">Mehuwala</option>
+          </optgroup>
+          <option value="ISBT">ISBT</option>
         </select>
       </div>
 
@@ -211,14 +218,20 @@ input[type=range]:focus { border: none; background: none; }
       </div>
 
       <div class="form-group">
-        <label>Reason (optional)</label>
-        <select id="reason">
+        <label>Reason <span class="required">*</span></label>
+        <select id="reason" onchange="toggleBusField()">
           <option value="Traffic">Traffic Jam</option>
           <option value="Accident">Accident on Road</option>
           <option value="Vehicle Issue">Vehicle Issue / Breakdown</option>
           <option value="Weather">Bad Weather</option>
           <option value="Other">Other</option>
         </select>
+      </div>
+
+      <div class="bus-group" id="busGroup">
+        <label>Which Bus Number? <span class="required">*</span></label>
+        <input type="number" id="busNumber" placeholder="e.g. 27">
+        <span class="input-hint">Enter the specific bus number that broke down</span>
       </div>
 
       <button class="submit-btn" id="submitBtn" onclick="reportDelay()">
@@ -231,7 +244,6 @@ input[type=range]:focus { border: none; background: none; }
   <!-- RESULTS -->
   <div class="results" id="results">
 
-    <!-- ALERT BANNER -->
     <div class="alert-banner">
       <div class="icon">🚨</div>
       <div>
@@ -240,18 +252,15 @@ input[type=range]:focus { border: none; background: none; }
       </div>
     </div>
 
-    <!-- AFFECTED -->
     <div class="affected-card">
-      <div class="section-title">🔴 Affected Stops on Same Corridor</div>
+      <div class="section-title">🔴 Affected Stops</div>
       <div class="affected-stops" id="r-stops"></div>
-
       <div class="section-title" style="margin-top:1.2rem">🚌 Affected Buses</div>
       <div class="affected-buses" id="r-buses"></div>
     </div>
 
-    <!-- ALTERNATES -->
     <div class="alt-card">
-      <div class="section-title">✅ Safe Alternate Buses (Different Corridor)</div>
+      <div class="section-title">✅ Safe Alternate Buses by Stop</div>
       <div id="r-alts"></div>
     </div>
 
@@ -266,15 +275,20 @@ function updateDelay(val) {
   document.getElementById('delayVal').textContent = val + ' min';
 }
 
+function toggleBusField() {
+  const reason = document.getElementById('reason').value;
+  const busGroup = document.getElementById('busGroup');
+  busGroup.classList.toggle('show', reason === 'Vehicle Issue');
+}
+
 async function reportDelay() {
   const stop = document.getElementById('delayStop').value;
   const delay = parseInt(document.getElementById('delayRange').value);
   const reason = document.getElementById('reason').value;
+  const busNum = parseInt(document.getElementById('busNumber')?.value) || 0;
 
-  if (!stop) {
-    alert('Please select a delayed stop!');
-    return;
-  }
+  if (!stop) { alert('Please select a delayed stop!'); return; }
+  if (reason === 'Vehicle Issue' && !busNum) { alert('Please enter the bus number!'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -284,20 +298,19 @@ async function reportDelay() {
     const res = await fetch(`${API}/delay`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ stopName: stop, delayMinutes: delay, reason: reason })
+      body: JSON.stringify({ stopName: stop, delayMinutes: delay, reason: reason, busNumber: busNum })
     });
     const data = await res.json();
 
-    // Show results
     document.getElementById('results').classList.add('show');
-    document.getElementById('r-title').textContent = `⚠️ ${delay} min delay at ${stop} due to ${reason}`;
+    document.getElementById('r-title').textContent = `⚠️ ${delay} min delay at ${stop} — ${reason}`;
     document.getElementById('r-msg').textContent = data.message;
 
     // Affected stops
     const stopsEl = document.getElementById('r-stops');
     if (data.affectedStops && data.affectedStops.length) {
       stopsEl.innerHTML = data.affectedStops.map(s =>
-        `<span class="stop-tag">📍 ${s.name}</span>`
+        `<span class="stop-tag">📍 ${typeof s === 'string' ? s : s.name}</span>`
       ).join('');
     } else {
       stopsEl.innerHTML = '<span style="color:var(--muted);font-size:0.82rem">No stops affected</span>';
@@ -313,21 +326,30 @@ async function reportDelay() {
       busesEl.innerHTML = '<span style="color:var(--muted);font-size:0.82rem">No buses affected</span>';
     }
 
-    // Alternate buses
+    // Alternates per stop
     const altsEl = document.getElementById('r-alts');
-    if (data.alternateBuses && data.alternateBuses.length) {
-      altsEl.innerHTML = data.alternateBuses.map(b => `
+    if (data.alternatesPerStop && Object.keys(data.alternatesPerStop).length) {
+      altsEl.innerHTML = Object.entries(data.alternatesPerStop).map(([stopName, buses]) => `
+        <div class="per-stop-card">
+          <div class="stop-name">📍 ${stopName}</div>
+          <div class="per-stop-buses">
+            ${buses.map(b => `<span class="per-stop-bus">Bus ${b}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    } else if (data.alternateBuses && data.alternateBuses.length) {
+      altsEl.innerHTML = data.alternateBuses.slice(0, 10).map(b => `
         <div class="alt-bus">
           <div class="alt-bus-num">${b.busNumber}</div>
           <div class="alt-bus-info">
             <strong>Bus ${b.busNumber} — ${b.regNumber}</strong>
-            <span>Departs from ${b.startStop} at ${b.departureTime} · ${b.corridor.replace('_',' ')}</span>
+            <span>Departs from ${b.startStop} at ${b.departureTime} · ${b.corridor.replace(/_/g,' ')}</span>
           </div>
           <span class="alt-bus-badge">✅ Safe</span>
         </div>
       `).join('');
     } else {
-      altsEl.innerHTML = '<div class="no-alt">😔 No alternate buses available on other corridors</div>';
+      altsEl.innerHTML = '<div class="no-alt">😔 No alternate buses available</div>';
     }
 
     document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
