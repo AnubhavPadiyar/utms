@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEHU Transport — Student Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1E3A8A; --navy-dark: #152a6e; --navy-light: #EEF2FF;
+  --white: #FFFFFF; --yellow: #FACC15; --yellow-dark: #ca9f0a;
+  --green: #16A34A; --green-bg: #F0FDF4;
+  --red: #DC2626; --red-bg: #FEF2F2;
+  --gray: #F8F9FA; --border: #E2E8F0;
+  --text: #1E293B; --sub: #475569; --muted: #94A3B8;
+}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5F6FA; color: var(--text); min-height: 100vh; }
+
+.nav { background: var(--navy); padding: 0 2rem; height: 65px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(30,58,138,0.3); }
+.nav-brand { display: flex; align-items: center; gap: 0.75rem; }
+.nav-logo { width: 38px; height: 38px; background: var(--yellow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.nav-name strong { display: block; font-size: 0.95rem; font-weight: 700; color: white; }
+.nav-name small { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+.nav-links { display: flex; align-items: center; gap: 0.5rem; }
+.nav-link { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 6px; transition: all 0.2s; }
+.nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+.nav-link.active { background: var(--yellow); color: var(--navy); font-weight: 700; }
+.nav-link.danger { background: var(--red); color: white; }
+
+/* PAGE LAYOUT */
+.page {
+  min-height: calc(100vh - 65px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f0f4ff 0%, #fafafa 100%);
+}
+
+/* LOGIN CARD */
+.login-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(30,58,138,0.1);
+  animation: fadeUp 0.4s ease;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+.card-top {
+  background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.card-top::after { content: '🚌'; position: absolute; right: -10px; bottom: -20px; font-size: 6rem; opacity: 0.08; }
+.card-icon { width: 60px; height: 60px; background: var(--yellow); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1rem; }
+.card-top h2 { font-size: 1.2rem; font-weight: 800; color: white; margin-bottom: 0.3rem; }
+.card-top p { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+
+.card-body { padding: 2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.2rem; }
+label { font-size: 0.78rem; font-weight: 600; color: var(--sub); letter-spacing: 0.03em; }
+input {
+  background: var(--gray);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+input:focus { border-color: var(--navy); background: white; }
+input::placeholder { color: var(--muted); }
+
+.login-btn {
+  width: 100%;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.login-btn:hover { background: var(--navy-dark); transform: translateY(-1px); }
+.login-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+.register-link {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.register-link a { color: var(--navy); font-weight: 600; text-decoration: none; }
+.register-link a:hover { text-decoration: underline; }
+
+.error-msg { display: none; background: var(--red-bg); border: 1px solid #fecaca; border-left: 4px solid var(--red); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8rem; color: var(--red); margin-bottom: 1rem; align-items: center; gap: 0.5rem; }
+.error-msg.show { display: flex; }
+
+/* PROFILE CARD */
+.profile-card {
+  display: none;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(30,58,138,0.1);
+  animation: fadeUp 0.4s ease;
+}
+.profile-card.show { display: block; }
+
+.profile-top {
+  background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.profile-top::after { content: '👤'; position: absolute; right: -10px; bottom: -20px; font-size: 6rem; opacity: 0.08; }
+.profile-avatar {
+  width: 70px; height: 70px;
+  background: var(--yellow);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0 auto 1rem;
+  border: 3px solid rgba(255,255,255,0.3);
+}
+.profile-top h2 { font-size: 1.3rem; font-weight: 800; color: white; margin-bottom: 0.2rem; }
+.profile-top p { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+
+.profile-body { padding: 1.5rem; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.info-item .il { font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+.info-item .iv { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+
+.bus-banner {
+  background: linear-gradient(135deg, var(--navy-light), #dbeafe);
+  border: 2px solid rgba(30,58,138,0.2);
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.bus-banner .bus-label { font-size: 0.72rem; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.bus-banner .bus-num { font-family: 'DM Mono', monospace; font-size: 4rem; font-weight: 700; color: var(--navy); line-height: 1; }
+.bus-banner .bus-sub { font-size: 0.75rem; color: var(--sub); margin-top: 0.4rem; }
+
+.action-btns { display: flex; gap: 0.75rem; }
+.btn { flex: 1; padding: 0.7rem; border: none; border-radius: 10px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.35rem; transition: all 0.2s; }
+.btn-navy { background: var(--navy); color: white; }
+.btn-navy:hover { background: var(--navy-dark); }
+.btn-red { background: var(--red); color: white; }
+.btn-red:hover { background: #b91c1c; }
+.btn-outline { background: var(--gray); color: var(--sub); border: 1px solid var(--border); }
+.btn-outline:hover { background: var(--border); }
+
+@media(max-width:480px){ .info-grid{grid-template-columns:1fr} .action-btns{flex-direction:column} }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🚌</div>
+    <div class="nav-name">
+      <strong>GEHU Transport Portal</strong>
+      <small>Graphic Era Hill University</small>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">🏠 Dashboard</a>
+    <a href="login.html" class="nav-link active">🔑 My Bus</a>
+    <a href="register.html" class="nav-link">👤 Register</a>
+    <a href="delay.html" class="nav-link danger">⚠️ Report Delay</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- LOGIN CARD -->
+  <div class="login-card" id="loginCard">
+    <div class="card-top">
+      <div class="card-icon">🔑</div>
+      <h2>Find My Bus</h2>
+      <p>Enter your Student ID to see your assigned bus</p>
+    </div>
+    <div class="card-body">
+      <div class="error-msg" id="errMsg">
+        <span>❌</span>
+        <span id="errText">Student not found!</span>
+      </div>
+      <div class="form-group">
+        <label>Student ID</label>
+        <input type="text" id="studentId" placeholder="e.g. 240111016" onkeydown="if(event.key==='Enter') lookup()">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="lookup()">
+        🔍 Find My Bus
+      </button>
+      <div class="register-link">
+        Not registered yet? <a href="register.html">Register here →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE CARD -->
+  <div class="profile-card" id="profileCard">
+    <div class="profile-top">
+      <div class="profile-avatar" id="p-avatar">AN</div>
+      <h2 id="p-name">Student Name</h2>
+      <p id="p-id">Student ID</p>
+    </div>
+    <div class="profile-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="il">Email</div>
+          <div class="iv" id="p-email">—</div>
+        </div>
+        <div class="info-item">
+          <div class="il">Boarding Stop</div>
+          <div class="iv" id="p-stop">—</div>
+        </div>
+      </div>
+      <div class="bus-banner">
+        <div class="bus-label">🚌 Your Assigned Bus</div>
+        <div class="bus-num" id="p-bus">—</div>
+        <div class="bus-sub">This bus picks you up from your boarding stop every morning</div>
+      </div>
+      <div class="action-btns">
+        <a href="delay.html" class="btn btn-red">⚠️ Report Delay</a>
+        <a href="index.html" class="btn btn-navy">🗺️ View Routes</a>
+        <button class="btn btn-outline" onclick="logout()">🔄 Lookup Another</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'http://localhost:8080/api';
+
+async function lookup() {
+  const id = document.getElementById('studentId').value.trim();
+  if (!id) { showError('Please enter your Student ID!'); return; }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Searching...';
+  hideError();
+
+  try {
+    const res = await fetch(`${API}/students/${id}`);
+    const data = await res.json();
+
+    if (data.success) {
+      const s = data.student;
+      document.getElementById('p-avatar').textContent = getInitials(s.name);
+      document.getElementById('p-name').textContent = s.name;
+      document.getElementById('p-id').textContent = 'ID: ' + s.studentId;
+      document.getElementById('p-email').textContent = s.email;
+      document.getElementById('p-stop').textContent = s.boardingStop;
+      document.getElementById('p-bus').textContent = s.assignedBusNumber || 'TBD';
+
+      document.getElementById('loginCard').style.display = 'none';
+      document.getElementById('profileCard').classList.add('show');
+    } else {
+      showError('Student ID not found! Please register first.');
+    }
+  } catch(e) {
+    showError('Cannot connect to backend. Make sure Spring Boot is running!');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🔍 Find My Bus';
+}
+
+function logout() {
+  document.getElementById('studentId').value = '';
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('profileCard').classList.remove('show');
+}
+
+function showError(msg) {
+  document.getElementById('errMsg').classList.add('show');
+  document.getElementById('errText').textContent = msg;
+}
+function hideError() {
+  document.getElementById('errMsg').classList.remove('show');
+}
+function getInitials(name) {
+  return name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) : '?';
+}
+</script>
+</body>
+</html>
